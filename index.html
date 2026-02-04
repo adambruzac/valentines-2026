@@ -1,103 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Movie | Valentine's 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #2d3436; overflow: hidden; font-family: 'Quicksand', sans-serif; }
-        
-        /* The Stage */
-        #movie-container {
-            width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            position: relative;
+        :root {
+            --primary: #ff4d6d;
+            --bg: #1a1a1a;
         }
 
-        /* Characters */
-        .character { width: 100px; height: 150px; position: absolute; bottom: 20%; transition: all 2s ease; }
-        #me { left: -150px; } /* Start off-screen left */
-        #her { right: -150px; } /* Start off-screen right */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: 'Quicksand', sans-serif; }
+
+        /* 1. START SCREEN */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff0f3; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100;
+            transition: opacity 1s ease-out;
+        }
+
+        .pulse-heart {
+            font-size: 80px; cursor: pointer;
+            animation: heartBeat 1.5s infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.5));
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        /* 2. THE STAGE */
+        #stage {
+            width: 100vw; height: 100vh;
+            background: linear-gradient(180deg, #2d3436 0%, #000000 100%);
+            display: none; position: relative;
+        }
+
+        /* Character Styling */
+        .char { position: absolute; bottom: 15%; width: 120px; transition: all 2s ease-in-out; }
+        #boy { left: -150px; }
+        #girl { right: -150px; }
 
         /* Speech Bubbles */
-        .bubble {
-            position: absolute; background: white; padding: 15px;
-            border-radius: 20px; bottom: 45%; opacity: 0;
-            transition: opacity 0.5s; font-weight: bold;
-        }
-        .bubble::after { /* The little tail */
-            content: ''; position: absolute; bottom: -10px; 
-            left: 50%; border-width: 10px 10px 0; border-style: solid;
-            border-color: white transparent transparent;
+        .speech {
+            position: absolute; background: white; padding: 12px 20px;
+            border-radius: 15px; bottom: 110%; width: 150px;
+            opacity: 0; transition: opacity 0.5s; font-size: 0.9rem; font-weight: bold;
         }
 
-        /* Animations */
-        @keyframes walk {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .walking { animation: walk 0.5s infinite; }
+        /* Simple Walk Animation */
+        .walking { animation: bob 0.6s infinite ease-in-out; }
+        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        #heart-explosion {
-            font-size: 50px; position: absolute; display: none;
-            animation: grow 1s forwards;
+        /* Final Scene Heart */
+        #final-heart {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-size: 100px; transition: transform 1.5s cubic-bezier(0.17, 0.89, 0.32, 1.49);
         }
-        @keyframes grow { 0% { transform: scale(0); } 100% { transform: scale(3); opacity: 0; } }
     </style>
 </head>
 <body>
 
-<div id="movie-container">
-    <div id="heart-explosion">❤️</div>
-    
-    <div id="me" class="character">
-        <div class="bubble" id="b1">Hey! Remember when we met?</div>
-        <svg viewBox="0 0 100 150">
-            <circle cx="50" cy="40" r="30" fill="#0984e3"/> <rect x="35" y="70" width="30" height="60" rx="15" fill="#74b9ff"/> </svg>
+    <div id="start-screen">
+        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 3rem;">Ready for our story?</h1>
+        <div class="pulse-heart" onclick="startMovie()">❤️</div>
+        <p style="color: #590d22; font-weight: bold; margin-top: 20px;">(Click the heart)</p>
     </div>
 
-    <div id="her" class="character">
-        <div class="bubble" id="b2">How could I forget? ❤️</div>
-        <svg viewBox="0 0 100 150">
-            <circle cx="50" cy="40" r="30" fill="#d63031"/> <rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/> </svg>
+    <div id="stage">
+        <div id="final-heart">❤️</div>
+
+        <div id="boy" class="char">
+            <div class="speech" id="msg-boy">Wait... I have something to tell you.</div>
+            <svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#0984e3"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#74b9ff"/></svg>
+        </div>
+
+        <div id="girl" class="char">
+            <div class="speech" id="msg-girl">What is it? 😊</div>
+            <svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#d63031"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/></svg>
+        </div>
     </div>
-</div>
 
-<script>
-    const me = document.getElementById('me');
-    const her = document.getElementById('her');
-    const b1 = document.getElementById('b1');
-    const b2 = document.getElementById('b2');
-    const heart = document.getElementById('heart-explosion');
+    <script>
+        function startMovie() {
+            // Hide Start Screen
+            document.getElementById('start-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('start-screen').style.display = 'none';
+                document.getElementById('stage').style.display = 'block';
+                runScript();
+            }, 1000);
+            
+            // If you have music:
+            // document.getElementById('bg-music').play();
+        }
 
-    // Simple Movie Timeline
-    setTimeout(() => {
-        // Scene 1: Enter stage
-        me.style.left = '35%';
-        me.classList.add('walking');
-        setTimeout(() => me.classList.remove('walking'), 2000);
-    }, 1000);
+        function runScript() {
+            const boy = document.getElementById('boy');
+            const girl = document.getElementById('girl');
+            const bMsg = document.getElementById('msg-boy');
+            const gMsg = document.getElementById('msg-girl');
+            const finalHeart = document.getElementById('final-heart');
 
-    setTimeout(() => {
-        her.style.right = '35%';
-        her.classList.add('walking');
-        setTimeout(() => her.classList.remove('walking'), 2000);
-    }, 3000);
+            // 1. Boy walks in
+            setTimeout(() => {
+                boy.style.left = '30%';
+                boy.classList.add('walking');
+                setTimeout(() => boy.classList.remove('walking'), 2000);
+            }, 500);
 
-    // Scene 2: Dialogue
-    setTimeout(() => { b1.style.opacity = '1'; }, 5500);
-    setTimeout(() => { b1.style.opacity = '0'; }, 8500);
-    
-    setTimeout(() => { b2.style.opacity = '1'; }, 9000);
-    setTimeout(() => { b2.style.opacity = '0'; }, 12000);
+            // 2. Girl walks in
+            setTimeout(() => {
+                girl.style.right = '30%';
+                girl.classList.add('walking');
+                setTimeout(() => girl.classList.remove('walking'), 2000);
+            }, 2500);
 
-    // Scene 3: The "Climax"
-    setTimeout(() => {
-        me.style.left = '42%';
-        her.style.right = '42%';
-        setTimeout(() => {
-            heart.style.display = 'block';
-        }, 1000);
-    }, 13000);
-</script>
+            // 3. Dialogue starts
+            setTimeout(() => { bMsg.innerText = "Remember our first date?"; bMsg.style.opacity = '1'; }, 5000);
+            setTimeout(() => { bMsg.style.opacity = '0'; }, 8000);
 
+            setTimeout(() => { gMsg.style.opacity = '1'; }, 8500);
+            setTimeout(() => { gMsg.style.opacity = '0'; }, 11000);
+
+            // 4. Final Scene
+            setTimeout(() => {
+                boy.style.left = '42%';
+                girl.style.right = '42%';
+                bMsg.innerText = "I love you more every day.";
+                bMsg.style.opacity = '1';
+                finalHeart.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            }, 12000);
+        }
+    </script>
 </body>
 </html>
