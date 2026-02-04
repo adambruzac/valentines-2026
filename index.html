@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Our Story | Valentine's 2026</title>
+    <title>For You | Valentine's 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,10 +14,10 @@
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background: #1a1a1a; font-family: 'Quicksand', sans-serif; 
-            overflow-x: hidden;
+            overflow-x: hidden; scroll-behavior: smooth;
         }
 
-        /* START SCREEN */
+        /* --- START SCREEN --- */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--pink-bg); display: flex; flex-direction: column;
@@ -38,7 +38,7 @@
             50% { transform: scale(1.2); }
         }
 
-        /* THE STAGE */
+        /* --- THE MOVIE STAGE --- */
         #stage {
             width: 100vw; height: 100vh;
             background: linear-gradient(180deg, #2d3436 0%, #000000 100%);
@@ -60,9 +60,15 @@
 
         .speech {
             position: absolute; background: white; padding: 10px 15px;
-            border-radius: 15px; bottom: 120%; width: 140px;
+            border-radius: 15px; bottom: 125%; width: 140px;
             opacity: 0; font-size: 0.9rem; font-weight: bold;
             color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+        .speech::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            border-width: 8px 8px 0; border-style: solid;
+            border-color: white transparent transparent; transform: translateX(-50%);
         }
 
         .walking { animation: bob 0.6s infinite ease-in-out; }
@@ -74,6 +80,7 @@
             z-index: 10;
         }
 
+        /* --- POLAROID GALLERY --- */
         #gallery {
             display: none; background: var(--pink-bg);
             padding: 80px 20px; flex-wrap: wrap;
@@ -83,14 +90,20 @@
         .polaroid {
             background: white; padding: 15px 15px 40px 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            width: 220px; transform: rotate(-3deg);
+            width: 240px; transition: transform 0.3s ease;
         }
-
-        .polaroid img { width: 100%; height: 220px; object-fit: cover; background: #eee; }
+        .polaroid img { width: 100%; height: 240px; object-fit: cover; background: #eee; }
+        .polaroid span { 
+            display: block; text-align: center; font-family: 'Dancing Script'; 
+            font-size: 1.4rem; margin-top: 15px; color: #590d22; 
+        }
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
 
         .falling-heart {
-            position: fixed; top: -10%; z-index: 5;
+            position: fixed; top: -10%; z-index: 1000;
             animation: fall linear forwards;
+            pointer-events: none;
         }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
@@ -98,7 +111,7 @@
 <body>
 
     <div id="start-screen">
-        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem;">For My Favorite</h1>
+        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem; padding: 0 20px;">A Little Story for You</h1>
         <div class="pulse-heart" id="main-heart">❤️</div>
         <p style="color: #590d22; font-weight: bold; margin-top: 20px;">Tap to Open</p>
     </div>
@@ -119,16 +132,17 @@
     </div>
 
     <div id="gallery">
-        <h2 style="width: 100%; text-align: center; font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary);">Memories</h2>
-        <div class="polaroid"><img src="photo1.jpg" alt="Memory"><span>Paris Weekend</span></div>
-        <div class="polaroid"><img src="photo2.jpg" alt="Memory"><span>I Love You</span></div>
+        <h2 style="width: 100%; text-align: center; font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary); margin-bottom: 40px;">Our Memories</h2>
+        <div class="polaroid"><img src="photo1.jpg" alt="Paris 1"><span>Our Paris Weekend</span></div>
+        <div class="polaroid"><img src="photo2.jpg" alt="Paris 2"><span>The Best Choice</span></div>
+        <div class="polaroid"><img src="photo3.jpg" alt="Paris 3"><span>I Love You</span></div>
+        <p style="width: 100%; text-align: center; font-weight: bold; color: var(--primary); margin-top: 50px;">Happy Valentine's Day! ❤️</p>
     </div>
 
     <script>
         const heartBtn = document.getElementById('main-heart');
         
         heartBtn.addEventListener('click', function() {
-            console.log("Heart clicked!"); // Debug check
             document.getElementById('start-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('start-screen').style.display = 'none';
@@ -155,6 +169,19 @@
             });
         }
 
+        function createHeartRain() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'falling-heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }, 400);
+        }
+
         async function runMovie() {
             const boy = document.getElementById('boy');
             const girl = document.getElementById('girl');
@@ -162,43 +189,54 @@
             const gMsg = document.getElementById('msg-girl');
             const stage = document.getElementById('stage');
             const paris = document.getElementById('paris-bg');
+            const finalHeart = document.getElementById('final-heart');
+            const gallery = document.getElementById('gallery');
 
-            // 1. Move characters
-            boy.style.left = "15%"; boy.classList.add('walking');
+            const isMobile = window.innerWidth < 768;
+            const stopPos = isMobile ? "12%" : "28%";
+            const hugPos = isMobile ? "38%" : "42%";
+
+            // 1. Walk in
+            boy.style.left = stopPos; boy.classList.add('walking');
             setTimeout(() => boy.classList.remove('walking'), 2000);
-            
             await new Promise(r => setTimeout(r, 1000));
-            
-            girl.style.right = "15%"; girl.classList.add('walking');
+            girl.style.right = stopPos; girl.classList.add('walking');
             setTimeout(() => girl.classList.remove('walking'), 2000);
-
             await new Promise(r => setTimeout(r, 2200));
 
-            // 2. Conversation
-            await typeWriter(bMsg, "Remember when I said 'let's go to Paris'?");
+            // 2. Dialogue
+            await typeWriter(bMsg, "Remember when I asked you 'let's go to Paris'?");
             bMsg.style.opacity = "0";
 
             await typeWriter(gMsg, "I thought you were joking! 😂");
             gMsg.style.opacity = "0";
 
+            // Paris Transition
             stage.style.background = "linear-gradient(180deg, #1e3799 0%, #000000 100%)";
             paris.style.opacity = "0.3";
 
             await typeWriter(bMsg, "I was dead serious. And you said yes.");
             bMsg.style.opacity = "0";
 
-            await typeWriter(gMsg, "It was the best weekend ever. 🗼");
+            await typeWriter(gMsg, "And we spent the best weekend there. 🗼");
             gMsg.style.opacity = "0";
 
             // 3. Finale
             stage.style.background = "linear-gradient(180deg, #ff4d6d 0%, #000000 100%)";
             paris.style.opacity = "0";
-            boy.style.left = "40%"; girl.style.right = "40%";
+            boy.style.left = hugPos; girl.style.right = hugPos;
+            boy.classList.add('walking'); girl.classList.add('walking');
             
             setTimeout(() => {
-                document.getElementById('final-heart').style.transform = 'translate(-50%, -50%) scale(2.5)';
-                document.getElementById('gallery').style.display = 'flex';
-                typeWriter(bMsg, "Happy Valentine's Day! ❤️");
+                boy.classList.remove('walking'); girl.classList.remove('walking');
+                finalHeart.style.transform = 'translate(-50%, -50%) scale(2.5)';
+                createHeartRain();
+                typeWriter(bMsg, "Happy Valentine's Day! I love you! ❤️").then(() => {
+                    setTimeout(() => {
+                        gallery.style.display = 'flex';
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    }, 1000);
+                });
             }, 2000);
         }
     </script>
