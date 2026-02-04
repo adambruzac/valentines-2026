@@ -11,19 +11,19 @@
             --boy-color: #0984e3;
             --girl-color: #d63031;
             --bg: #1a1a1a;
+            --pink-bg: #fff0f3;
         }
 
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background: var(--bg); 
-            font-family: 'Quicksand', sans-serif; 
-            touch-action: manipulation;
+            background: var(--bg); font-family: 'Quicksand', sans-serif; 
+            overflow-x: hidden;
         }
 
-        /* --- START SCREEN --- */
+        /* --- 1. START SCREEN --- */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff0f3; display: flex; flex-direction: column;
+            background: var(--pink-bg); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 100;
             transition: opacity 1s ease-out; text-align: center;
         }
@@ -43,7 +43,7 @@
             70% { transform: scale(1); }
         }
 
-        /* --- THE STAGE --- */
+        /* --- 2. THE MOVIE STAGE --- */
         #stage {
             width: 100vw; height: 100vh;
             background: linear-gradient(180deg, #2d3436 0%, #000000 100%);
@@ -54,15 +54,10 @@
         #paris-bg {
             position: absolute; top: 20%; left: 50%;
             transform: translateX(-50%); font-size: 100px;
-            opacity: 0; transition: opacity 2s ease;
-            z-index: 1;
+            opacity: 0; transition: opacity 2s ease; z-index: 1;
         }
 
-        .char { 
-            position: absolute; bottom: 20%; 
-            width: 80px; transition: all 2s ease-in-out; 
-            z-index: 2;
-        }
+        .char { position: absolute; bottom: 20%; width: 80px; transition: all 2s ease-in-out; z-index: 2; }
         #boy { left: -150px; }
         #girl { right: -150px; }
 
@@ -81,8 +76,6 @@
             border-color: white transparent transparent; transform: translateX(-50%);
         }
 
-        @media (min-width: 768px) { .speech { width: 180px; font-size: 1rem; } }
-
         .walking { animation: bob 0.6s infinite ease-in-out; }
         @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -91,6 +84,33 @@
             font-size: 80px; transition: transform 1.5s cubic-bezier(0.17, 0.89, 0.32, 1.49);
             z-index: 10;
         }
+
+        /* --- 3. POLAROID GALLERY --- */
+        #gallery {
+            display: none; /* Hidden until movie ends */
+            background: var(--pink-bg);
+            padding: 80px 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .polaroid {
+            background: white; padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease; width: 220px;
+        }
+
+        .polaroid img { width: 100%; height: 220px; object-fit: cover; border: 1px solid #f0f0f0; }
+
+        .polaroid span {
+            display: block; text-align: center; font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem; margin-top: 15px; color: #590d22;
+        }
+
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
+        .polaroid:hover { transform: rotate(0deg) scale(1.05); z-index: 5; }
 
         .falling-heart {
             position: fixed; top: -10%; z-index: 5;
@@ -102,9 +122,9 @@
 <body>
 
     <div id="start-screen">
-        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem; padding: 0 20px;">For My Favorite Person</h1>
+        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem; padding: 0 20px;">A Special Surprise</h1>
         <div class="pulse-heart" onclick="startMovie()">❤️</div>
-        <p style="color: #590d22; font-weight: bold; margin-top: 20px;">Tap to open</p>
+        <p style="color: #590d22; font-weight: bold; margin-top: 20px;">Tap to Start</p>
     </div>
 
     <div id="stage">
@@ -119,6 +139,23 @@
         <div id="girl" class="char">
             <div class="speech" id="msg-girl"></div>
             <svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#d63031"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/></svg>
+        </div>
+    </div>
+
+    <div id="gallery">
+        <h2 style="width: 100%; text-align: center; font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary);">Memories</h2>
+        
+        <div class="polaroid">
+            <img src="photo1.jpg" alt="Memory 1">
+            <span>Our Weekend in Paris</span>
+        </div>
+        <div class="polaroid">
+            <img src="photo2.jpg" alt="Memory 2">
+            <span>Best decision ever!</span>
+        </div>
+        <div class="polaroid">
+            <img src="photo3.jpg" alt="Memory 3">
+            <span>I Love You ❤️</span>
         </div>
     </div>
 
@@ -171,12 +208,13 @@
             const gMsg = document.getElementById('msg-girl');
             const paris = document.getElementById('paris-bg');
             const finalHeart = document.getElementById('final-heart');
+            const gallery = document.getElementById('gallery');
 
             const isMobile = window.innerWidth < 768;
             const stopPos = isMobile ? '12%' : '28%';
             const hugPos = isMobile ? '38%' : '42%';
 
-            // WALK IN
+            // 1. Entrance
             boy.style.left = stopPos;
             boy.classList.add('walking');
             setTimeout(() => boy.classList.remove('walking'), 2000);
@@ -186,42 +224,22 @@
             setTimeout(() => girl.classList.remove('walking'), 2000);
             await new Promise(r => setTimeout(r, 2200));
 
-            // DIALOGUE: THE ASKING
-            await typeWriter(bMsg, "Hey... remember when I asked you 'let's go to Paris'?");
+            // 2. The Story
+            await typeWriter(bMsg, "Hey... remember when I said 'let's go to Paris'?");
             bMsg.style.opacity = "0";
 
-            await typeWriter(gMsg, "I thought you were joking at first! 😂");
+            await typeWriter(gMsg, "I thought you were joking! 😂");
             gMsg.style.opacity = "0";
 
-            await typeWriter(bMsg, "I was dead serious. And you said yes.");
+            await typeWriter(bMsg, "I was serious. And you actually said yes.");
             bMsg.style.opacity = "0";
 
-            // TRANSITION TO PARIS NIGHT
+            // Paris Transition
             stage.style.background = "linear-gradient(180deg, #1e3799 0%, #000000 100%)";
             paris.style.opacity = "0.3";
 
-            await typeWriter(gMsg, "And then we spent that amazing weekend together... 🗼");
+            await typeWriter(gMsg, "That weekend was absolutely perfect... 🗼");
             gMsg.style.opacity = "0";
 
             await typeWriter(bMsg, "It was the best decision I ever made.");
-            bMsg.style.opacity = "0";
-
-            // FINALE
-            paris.style.opacity = "0";
-            stage.style.background = "linear-gradient(180deg, #ff4d6d 0%, #000000 100%)";
-            boy.style.left = hugPos;
-            girl.style.right = hugPos;
-            boy.classList.add('walking');
-            girl.classList.add('walking');
-            
-            setTimeout(() => {
-                boy.classList.remove('walking');
-                girl.classList.remove('walking');
-                finalHeart.style.transform = 'translate(-50%, -50%) scale(2.5)';
-                createHeartRain();
-                typeWriter(bMsg, "Happy Valentine's Day! To many more 'yeses'. ❤️", 80);
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+            bMsg.style.opacity
