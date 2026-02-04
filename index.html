@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; background: #2d3436; overflow: hidden; font-family: 'Quicksand', sans-serif; }
+        
+        /* The Stage */
+        #movie-container {
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative;
+        }
+
+        /* Characters */
+        .character { width: 100px; height: 150px; position: absolute; bottom: 20%; transition: all 2s ease; }
+        #me { left: -150px; } /* Start off-screen left */
+        #her { right: -150px; } /* Start off-screen right */
+
+        /* Speech Bubbles */
+        .bubble {
+            position: absolute; background: white; padding: 15px;
+            border-radius: 20px; bottom: 45%; opacity: 0;
+            transition: opacity 0.5s; font-weight: bold;
+        }
+        .bubble::after { /* The little tail */
+            content: ''; position: absolute; bottom: -10px; 
+            left: 50%; border-width: 10px 10px 0; border-style: solid;
+            border-color: white transparent transparent;
+        }
+
+        /* Animations */
+        @keyframes walk {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .walking { animation: walk 0.5s infinite; }
+
+        #heart-explosion {
+            font-size: 50px; position: absolute; display: none;
+            animation: grow 1s forwards;
+        }
+        @keyframes grow { 0% { transform: scale(0); } 100% { transform: scale(3); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="movie-container">
+    <div id="heart-explosion">❤️</div>
+    
+    <div id="me" class="character">
+        <div class="bubble" id="b1">Hey! Remember when we met?</div>
+        <svg viewBox="0 0 100 150">
+            <circle cx="50" cy="40" r="30" fill="#0984e3"/> <rect x="35" y="70" width="30" height="60" rx="15" fill="#74b9ff"/> </svg>
+    </div>
+
+    <div id="her" class="character">
+        <div class="bubble" id="b2">How could I forget? ❤️</div>
+        <svg viewBox="0 0 100 150">
+            <circle cx="50" cy="40" r="30" fill="#d63031"/> <rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/> </svg>
+    </div>
+</div>
+
+<script>
+    const me = document.getElementById('me');
+    const her = document.getElementById('her');
+    const b1 = document.getElementById('b1');
+    const b2 = document.getElementById('b2');
+    const heart = document.getElementById('heart-explosion');
+
+    // Simple Movie Timeline
+    setTimeout(() => {
+        // Scene 1: Enter stage
+        me.style.left = '35%';
+        me.classList.add('walking');
+        setTimeout(() => me.classList.remove('walking'), 2000);
+    }, 1000);
+
+    setTimeout(() => {
+        her.style.right = '35%';
+        her.classList.add('walking');
+        setTimeout(() => her.classList.remove('walking'), 2000);
+    }, 3000);
+
+    // Scene 2: Dialogue
+    setTimeout(() => { b1.style.opacity = '1'; }, 5500);
+    setTimeout(() => { b1.style.opacity = '0'; }, 8500);
+    
+    setTimeout(() => { b2.style.opacity = '1'; }, 9000);
+    setTimeout(() => { b2.style.opacity = '0'; }, 12000);
+
+    // Scene 3: The "Climax"
+    setTimeout(() => {
+        me.style.left = '42%';
+        her.style.right = '42%';
+        setTimeout(() => {
+            heart.style.display = 'block';
+        }, 1000);
+    }, 13000);
+</script>
+
+</body>
+</html>
