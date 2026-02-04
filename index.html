@@ -3,80 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For You | Our Story</title>
+    <title>Our 7 Years</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff4d6d; --text: #333; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #1a1a1a; font-family: 'Quicksand', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        :root { --primary: #ff4d6d; --bg: #1a1a1a; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); font-family: 'Quicksand', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
 
         /* --- START SCREEN --- */
         #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff0f3; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; transition: opacity 1.5s; text-align: center; }
         .pulse-heart { font-size: 80px; cursor: pointer; animation: heartBeat 1.5s infinite; -webkit-tap-highlight-color: transparent; }
         @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
-        /* --- THE STAGE --- */
-        #stage { width: 100vw; height: 100vh; background: #000; display: none; position: relative; transition: background 2s ease; }
+        /* --- THE CINEMA STAGE --- */
+        #stage { width: 100vw; height: 100vh; background: #000; display: none; position: relative; transition: background 3s ease; }
         
-        /* Scene Icons (Bowling, House, Tower, Graduation, etc) */
-        #scene-icon { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); font-size: 100px; opacity: 0; transition: all 1.5s; z-index: 1; }
+        /* Central Narrator Text */
+        #monologue-text {
+            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 600px; text-align: center;
+            color: white; font-size: 1.2rem; line-height: 1.6;
+            font-style: italic; opacity: 0; transition: opacity 1s; z-index: 10;
+        }
+
+        #scene-icon { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; opacity: 0; transition: all 2s; z-index: 1; filter: grayscale(50%); }
 
         /* Characters */
-        .char { position: absolute; bottom: 20%; width: 90px; transition: all 2s ease-in-out; z-index: 2; }
+        .char { position: absolute; bottom: 15%; width: 90px; transition: all 3s ease-in-out; z-index: 2; }
         #boy { left: -150px; }
         #girl { right: -150px; }
-
-        /* Dialogue */
-        .speech { position: absolute; background: white; padding: 12px 18px; border-radius: 15px; bottom: 120%; width: 160px; opacity: 0; font-size: 0.95rem; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.3); pointer-events: none; }
-        .speech::after { content: ''; position: absolute; bottom: -8px; left: 50%; border-width: 8px 8px 0; border-style: solid; border-color: white transparent transparent; transform: translateX(-50%); }
 
         .walking { animation: bob 0.6s infinite ease-in-out; }
         @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* --- PHOTO GALLERY --- */
-        #gallery { display: none; background: #fff0f3; padding: 60px 20px; flex-wrap: wrap; justify-content: center; gap: 30px; }
-        .polaroid { background: white; padding: 15px 15px 40px 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 260px; transform: rotate(-2deg); margin-bottom: 20px; }
+        /* --- GALLERY --- */
+        #gallery { display: none; background: #fff0f3; padding: 80px 20px; flex-wrap: wrap; justify-content: center; gap: 30px; }
+        .polaroid { background: white; padding: 15px 15px 40px 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 260px; transform: rotate(-2deg); }
         .polaroid img { width: 100%; height: 260px; object-fit: cover; background: #eee; }
         .polaroid span { display: block; text-align: center; font-family: 'Dancing Script'; font-size: 1.5rem; margin-top: 15px; color: #590d22; }
 
-        /* Finale Elements */
-        #final-heart { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 100px; transition: transform 1.5s; z-index: 10; }
-        .falling-heart { position: fixed; top: -10%; z-index: 1000; animation: fall linear forwards; pointer-events: none; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        #final-heart { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 100px; transition: transform 2s; z-index: 15; }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
-        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.8rem; padding: 0 20px;">A Reflection of Us</h1>
+        <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem;">For You, From Me</h1>
         <div class="pulse-heart" id="main-heart">❤️</div>
-        <p style="font-weight: bold;">Tap to play our story</p>
+        <p>Tap to listen</p>
     </div>
 
     <div id="stage">
+        <div id="monologue-text"></div>
         <div id="scene-icon"></div>
         <div id="final-heart">❤️</div>
         
-        <div id="boy" class="char">
-            <div class="speech" id="msg-boy"></div>
-            <svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#0984e3"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#74b9ff"/></svg>
-        </div>
-
-        <div id="girl" class="char">
-            <div class="speech" id="msg-girl"></div>
-            <svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#d63031"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/></svg>
-        </div>
+        <div id="boy" class="char"><svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#0984e3"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#74b9ff"/></svg></div>
+        <div id="girl" class="char"><svg viewBox="0 0 100 150"><circle cx="50" cy="40" r="30" fill="#d63031"/><rect x="35" y="70" width="30" height="60" rx="15" fill="#ff7675"/></svg></div>
     </div>
 
     <div id="gallery">
-        <h2 style="width: 100%; text-align: center; font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary);">7 Years of Memories</h2>
-        <div class="polaroid"><img src="photo1.jpg"><span>The Beginning</span></div>
+        <h2 style="width: 100%; text-align: center; font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary);">Our 7 Years</h2>
+        <div class="polaroid"><img src="photo1.jpg"><span>Where it started</span></div>
         <div class="polaroid"><img src="photo2.jpg"><span>Paris 🗼</span></div>
-        <div class="polaroid"><img src="photo3.jpg"><span>Graduation 🎓</span></div>
-        <div class="polaroid"><img src="photo4.jpg"><span>Our North East Home</span></div>
+        <div class="polaroid"><img src="photo3.jpg"><span>Graduation</span></div>
+        <div class="polaroid"><img src="photo4.jpg"><span>The North East</span></div>
         
-        <div style="width: 100%; max-width: 600px; background: white; padding: 30px; border-radius: 15px; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-            <p style="font-family: 'Dancing Script'; font-size: 1.8rem; color: #590d22; line-height: 1.4;">
-                I know I haven’t been the best boyfriend lately, and I’m so sorry for letting you down. 7 years is a lifetime of memories, and I’m not ready to let that go. I’m ready to be the person you deserve.
+        <div style="width: 100%; max-width: 600px; background: white; padding: 40px; border-radius: 20px; margin-top: 60px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border: 2px solid var(--primary);">
+            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: #590d22; line-height: 1.5; text-align: center;">
+                I'm sorry I lost my way. You are the best thing that ever happened to me, and I'll do whatever it takes to be the man you deserve.
             </p>
         </div>
     </div>
@@ -88,72 +82,56 @@
             setTimeout(() => {
                 document.getElementById('start-screen').style.display = 'none';
                 document.getElementById('stage').style.display = 'block';
-                runMovie();
+                runMonologue();
             }, 1500);
         });
 
-        function typeWriter(element, text) {
+        function typeSentence(text) {
+            const el = document.getElementById('monologue-text');
             return new Promise((resolve) => {
-                element.innerHTML = ""; element.style.opacity = "1";
-                let i = 0;
-                function type() {
-                    if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, 55); }
-                    else { setTimeout(resolve, 2000); }
-                }
-                type();
+                el.style.opacity = "0";
+                setTimeout(() => {
+                    el.innerHTML = text;
+                    el.style.opacity = "1";
+                    setTimeout(resolve, 4000); // How long each sentence stays
+                }, 1000);
             });
         }
 
-        async function runMovie() {
+        async function runMonologue() {
             const boy = document.getElementById('boy'); const girl = document.getElementById('girl');
-            const bMsg = document.getElementById('msg-boy'); const gMsg = document.getElementById('msg-girl');
             const stage = document.getElementById('stage'); const icon = document.getElementById('scene-icon');
 
-            const stopPos = window.innerWidth < 768 ? "12%" : "28%";
-            const hugPos = window.innerWidth < 768 ? "38%" : "42%";
+            // Start Positions
+            boy.style.left = "20%"; girl.style.right = "20%"; boy.classList.add('walking'); girl.classList.add('walking');
+            setTimeout(() => { boy.classList.remove('walking'); girl.classList.remove('walking'); }, 3000);
 
-            // 1. Scene: University Bowling
+            // SCENE 1: Bowling
             stage.style.background = "#2d3436"; icon.innerHTML = "🎳"; icon.style.opacity = "0.2";
-            boy.style.left = stopPos; boy.classList.add('walking');
-            setTimeout(() => boy.classList.remove('walking'), 2000);
-            await new Promise(r => setTimeout(r, 1000));
-            girl.style.right = stopPos; girl.classList.add('walking');
-            setTimeout(() => girl.classList.remove('walking'), 2000);
-            await new Promise(r => setTimeout(r, 2200));
+            await typeSentence("It’s been 7 years since that day at university bowling... I can still see you standing there.");
+            
+            // SCENE 2: The House
+            stage.style.background = "#353b48"; icon.innerHTML = "🏠";
+            await typeSentence("I think about those days in your student house. We were just kids, figuring it all out together.");
+            
+            // SCENE 3: Paris
+            stage.style.background = "#192a56"; icon.innerHTML = "🗼";
+            await typeSentence("Then came Paris. I asked you on a whim, and that weekend showed me what 'forever' looked like.");
+            
+            // SCENE 4: Career/North East
+            stage.style.background = "#2f3640"; icon.innerHTML = "🎓";
+            await typeSentence("We graduated, moved to the North East, and started our lives. I was so proud of us.");
+            
+            // SCENE 5: The Apology
+            stage.style.background = "#2c3e50"; icon.innerHTML = "❤️";
+            await typeSentence("But somewhere along the way, I stopped being the boyfriend you deserved. I let the best thing in my life slip away.");
+            
+            await typeSentence("I am so incredibly sorry. I haven't forgotten who we are, or what we mean to each other.");
 
-            await typeWriter(bMsg, "It all started at uni... I remember seeing you at bowling.");
-            bMsg.style.opacity = "0";
-
-            // 2. Scene: Student House
-            stage.style.background = "#636e72"; icon.innerHTML = "🏠";
-            await typeWriter(gMsg, "Then all those days hanging out at the student house.");
-            gMsg.style.opacity = "0";
-
-            // 3. Scene: Paris
-            stage.style.background = "#1e3799"; icon.innerHTML = "🗼";
-            await typeWriter(bMsg, "I asked you to go to Paris... and you said yes.");
-            bMsg.style.opacity = "0";
-            await typeWriter(gMsg, "That weekend was the best weekend of my life.");
-            gMsg.style.opacity = "0";
-
-            // 4. Scene: The 7-Year Journey
-            stage.style.background = "#27ae60"; icon.innerHTML = "🎓";
-            await typeWriter(bMsg, "7 years. We graduated, we moved to the North East...");
-            bMsg.style.opacity = "0";
-            icon.innerHTML = "💼";
-            await typeWriter(gMsg, "We built our careers and a life together.");
-            gMsg.style.opacity = "0";
-
-            // 5. Scene: The Apology
-            stage.style.background = "#ff4d6d"; icon.innerHTML = "🙏";
-            await typeWriter(bMsg, "I know I haven't been the boyfriend you deserved lately.");
-            bMsg.style.opacity = "0";
-            await typeWriter(bMsg, "I'm so sorry, and I want to make it up to you.");
-            bMsg.style.opacity = "0";
-
-            // Finale
-            boy.style.left = hugPos; girl.style.right = hugPos;
+            // FINALE
+            boy.style.left = "42%"; girl.style.right = "42%";
             boy.classList.add('walking'); girl.classList.add('walking');
+            
             setTimeout(() => {
                 boy.classList.remove('walking'); girl.classList.remove('walking');
                 document.getElementById('final-heart').style.transform = 'translate(-50%, -50%) scale(2.5)';
@@ -161,7 +139,7 @@
                     document.getElementById('gallery').style.display = 'flex';
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                 }, 2000);
-            }, 2000);
+            }, 3000);
         }
     </script>
 </body>
