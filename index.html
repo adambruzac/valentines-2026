@@ -48,23 +48,32 @@
             width: 100vw; height: 100vh;
             background: linear-gradient(180deg, #2d3436 0%, #000000 100%);
             display: none; position: relative;
+            transition: background 2s ease;
+        }
+
+        #paris-bg {
+            position: absolute; top: 20%; left: 50%;
+            transform: translateX(-50%); font-size: 100px;
+            opacity: 0; transition: opacity 2s ease;
+            z-index: 1;
         }
 
         .char { 
             position: absolute; bottom: 20%; 
             width: 80px; transition: all 2s ease-in-out; 
+            z-index: 2;
         }
         #boy { left: -150px; }
         #girl { right: -150px; }
 
         @media (min-width: 768px) { .char { width: 120px; } }
 
-        /* Speech Bubbles */
         .speech {
             position: absolute; background: white; padding: 10px 15px;
-            border-radius: 15px; bottom: 120%; width: 120px;
+            border-radius: 15px; bottom: 120%; width: 130px;
             opacity: 0; font-size: 0.85rem; font-weight: bold;
             color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
         .speech::after {
             content: ''; position: absolute; bottom: -8px; left: 50%;
@@ -74,7 +83,6 @@
 
         @media (min-width: 768px) { .speech { width: 180px; font-size: 1rem; } }
 
-        /* Animations */
         .walking { animation: bob 0.6s infinite ease-in-out; }
         @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -96,10 +104,11 @@
     <div id="start-screen">
         <h1 style="font-family: 'Dancing Script'; color: var(--primary); font-size: 2.5rem; padding: 0 20px;">For My Favorite Person</h1>
         <div class="pulse-heart" onclick="startMovie()">❤️</div>
-        <p style="color: #590d22; font-weight: bold; margin-top: 20px;">Tap to Begin</p>
+        <p style="color: #590d22; font-weight: bold; margin-top: 20px;">Tap to open</p>
     </div>
 
     <div id="stage">
+        <div id="paris-bg">🗼</div>
         <div id="final-heart">❤️</div>
 
         <div id="boy" class="char">
@@ -114,7 +123,6 @@
     </div>
 
     <script>
-        // TYPEWRITER UTILITY
         function typeWriter(element, text, speed = 60) {
             return new Promise((resolve) => {
                 element.innerHTML = "";
@@ -126,14 +134,13 @@
                         i++;
                         setTimeout(type, speed);
                     } else {
-                        setTimeout(resolve, 1500); // Hold text for a bit
+                        setTimeout(resolve, 1500);
                     }
                 }
                 type();
             });
         }
 
-        // HEART RAIN EFFECT
         function createHeartRain() {
             setInterval(() => {
                 const heart = document.createElement('div');
@@ -141,8 +148,7 @@
                 heart.className = 'falling-heart';
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                heart.style.duration = (Math.random() * 3 + 2) + 's';
-                heart.style.animationDuration = heart.style.duration;
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 document.body.appendChild(heart);
                 setTimeout(() => heart.remove(), 5000);
             }, 300);
@@ -158,43 +164,51 @@
         }
 
         async function runMovie() {
+            const stage = document.getElementById('stage');
             const boy = document.getElementById('boy');
             const girl = document.getElementById('girl');
             const bMsg = document.getElementById('msg-boy');
             const gMsg = document.getElementById('msg-girl');
+            const paris = document.getElementById('paris-bg');
             const finalHeart = document.getElementById('final-heart');
 
             const isMobile = window.innerWidth < 768;
-            const stopPos = isMobile ? '15%' : '30%';
+            const stopPos = isMobile ? '12%' : '28%';
             const hugPos = isMobile ? '38%' : '42%';
 
-            // 1. Walk In
+            // WALK IN
             boy.style.left = stopPos;
             boy.classList.add('walking');
             setTimeout(() => boy.classList.remove('walking'), 2000);
-
             await new Promise(r => setTimeout(r, 1000));
-
             girl.style.right = stopPos;
             girl.classList.add('walking');
             setTimeout(() => girl.classList.remove('walking'), 2000);
+            await new Promise(r => setTimeout(r, 2200));
 
-            await new Promise(r => setTimeout(r, 2500));
-
-            // 2. The Dialogue
-            await typeWriter(bMsg, "Hey... can I tell you a secret?");
+            // DIALOGUE: THE ASKING
+            await typeWriter(bMsg, "Hey... remember when I asked you 'let's go to Paris'?");
             bMsg.style.opacity = "0";
 
-            await typeWriter(gMsg, "Anything! What is it?");
+            await typeWriter(gMsg, "I thought you were joking at first! 😂");
             gMsg.style.opacity = "0";
 
-            await typeWriter(bMsg, "Every day with you is my new favorite day.");
+            await typeWriter(bMsg, "I was dead serious. And you said yes.");
             bMsg.style.opacity = "0";
 
-            await typeWriter(gMsg, "I love you so much! ❤️");
+            // TRANSITION TO PARIS NIGHT
+            stage.style.background = "linear-gradient(180deg, #1e3799 0%, #000000 100%)";
+            paris.style.opacity = "0.3";
+
+            await typeWriter(gMsg, "And then we spent that amazing weekend together... 🗼");
             gMsg.style.opacity = "0";
 
-            // 3. The Hug & Finale
+            await typeWriter(bMsg, "It was the best decision I ever made.");
+            bMsg.style.opacity = "0";
+
+            // FINALE
+            paris.style.opacity = "0";
+            stage.style.background = "linear-gradient(180deg, #ff4d6d 0%, #000000 100%)";
             boy.style.left = hugPos;
             girl.style.right = hugPos;
             boy.classList.add('walking');
@@ -203,9 +217,9 @@
             setTimeout(() => {
                 boy.classList.remove('walking');
                 girl.classList.remove('walking');
-                finalHeart.style.transform = 'translate(-50%, -50%) scale(2)';
+                finalHeart.style.transform = 'translate(-50%, -50%) scale(2.5)';
                 createHeartRain();
-                typeWriter(bMsg, "Happy Valentine's Day! Forever & Always.", 80);
+                typeWriter(bMsg, "Happy Valentine's Day! To many more 'yeses'. ❤️", 80);
             }, 2000);
         }
     </script>
